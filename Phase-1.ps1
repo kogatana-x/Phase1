@@ -3,15 +3,13 @@
 "             PowerShell Auditing Script  'aka Phase-1'             "
 "-------------------------------------------------------------------"
  SYNOPSIS: this script will document your PC's current profile and take a few unproblematic steps to harden its configuration
- DESCRIPTION: The most successful enterprises maintain proper documentation of their systems/infastructure and is crucial in the event of an incident.
+ DESCRIPTION: the most successful enterprises maintain proper documentation of their systems/infastructure and is crucial in the event of an incident.
  Unfortunately, garnering this documentation has proven itself to be particularly time consuming and is prone to human error.
  This script intends to ease the burden of auditing through automation.
 
- **TODO GUI & TOGGLE OPTIONS TO CHANGE & AUDIT (SEPERATE SCRIPT)
  **FIXME FIX OTHER DEPENDENCIES W/O ADDING BAD RULES (ie SQl SRV)
  **TODO LIST POTENTIAL BEACONS
  **TODO ICACLS/RM Accessibility
- **TODO Test on a box
 
  CONTACT: please refer any questions or comments regarding this script to <AA>
 
@@ -33,7 +31,7 @@ $ExecutionPolicy = Get-ExecutionPolicy
 Set-ExecutionPolicy Unrestricted -force
 
 #FUN STUFF>>
-<#net user Administrator tmp-123!A@3de/FFd7g_
+  net user Administrator 'tmp-123!A@3de/FFd7g_'
   net user poop SecPass123@ /add
   net user p00p SecPass123@ /add /domain
   net localgroup Administrators poop /add
@@ -41,7 +39,7 @@ Set-ExecutionPolicy Unrestricted -force
   net group Administrators poop /add
 
   net user Guest /active:no
-#>
+
 <#---------------------
   Function Definitions:
 ----------------------#>
@@ -69,7 +67,6 @@ Set-ExecutionPolicy Unrestricted -force
    Write-Host $str
    Write-Host $xdash
  }
-<#
 # Set Standard/Static Firewall Rules
  $network_addr = "172.20.240.0/22,127.0.0.1/8" #CHANGEME
  function fwset-standard{
@@ -78,8 +75,8 @@ Set-ExecutionPolicy Unrestricted -force
     netsh advfirewall firewall add rule name="LB" action=allow remoteip=127.0.0.1/8 dir=in
 
    #Allow internet (through firefox) out
-    netsh advfirewall firewall add rule name="�FOX_OUT_TCP"� dir=out action=allow protocol=tcp remoteport=80,443 program=%ProgramFiles%\Mozilla*\firefox.exe
-    netsh advfirewall firewall add rule name="�FOX_OUT_UDP" dir=out action=allow protocol=udp remoteport=53 program=%ProgramFiles%\Mozilla*\firefox.exe
+    netsh advfirewall firewall add rule name="FOX_OUT_TCP" dir=out action=allow protocol=tcp remoteport=80,443 program=%ProgramFiles%\Mozilla*\firefox.exe
+    netsh advfirewall firewall add rule name="FOX_OUT_UDP" dir=out action=allow protocol=udp remoteport=53 program=%ProgramFiles%\Mozilla*\firefox.exe
 
     #Block commonly exploited ports that are rarely used in a small commerical setting
      #  RPC,SSH (for Windows),SMB, etc
@@ -107,12 +104,12 @@ Set-ExecutionPolicy Unrestricted -force
 
    #Sets AD/DNS Rules - TCP
    $processes = (Get-NetTCPConnection | ? {($_.State -eq "Listen") -and ($_.RemoteAddress -eq "0.0.0.0") -and ($_.Port -in 53,88,389)} | Select LocalPort)
-   foreach ($process in $processes){$n=($_.LocalPort + "-tcp"); netsh advfirewall firewall add rule name=$n dir=in action=allow protocol=tcp remoteport=$_.LocalPort remoteip=$network_addr program=(wmic proceess where processid=$_.OwningProcess get executablepath)}
-   foreach ($process in $processes){$n=($_.LocalPort + "-tcp"); netsh advfirewall firewall add rule name=$n dir=out action=allow protocol=tcp remoteport=$_.LocalPort remoteip=$network_addr program=(wmic proceess where processid=$_.OwningProcess get executablepath)}
+   foreach ($process in $processes){netsh advfirewall firewall add rule name=$_.LocalPort dir=in action=allow protocol=tcp remoteport=$_.LocalPort remoteip=$network_addr program=(wmic proceess where processid=$_.OwningProcess get executablepath)}
+   foreach ($process in $processes){netsh advfirewall firewall add rule name=$_.LocalPort dir=out action=allow protocol=tcp remoteport=$_.LocalPort remoteip=$network_addr program=(wmic proceess where processid=$_.OwningProcess get executablepath)}
 
    fwset-standard #call static rules defined above
  }
- #>
+
 <#---------------------
       Start Script:
  ----------------------#>
@@ -188,12 +185,12 @@ Set-ExecutionPolicy Unrestricted -force
   write-host (header "Listening Network Connections")
   netstat -abno
   #TODO FIND THE POTENTIAL BADDIES
-<#
+
   #AUDIT FW RULES >>
   netsh advfirewall firewall delete rule name=all
-  netsh set logging C:\Apps\app_log.txt 32767 ENABLE ENABLE
+  netsh firewall set logging C:\Apps\app_log.txt 32767 ENABLE ENABLE
   fwset
-#>
+
   write-host (header "Firewall Rules Set")
   write-host "The Following Rules have been created:"
   write-host "______________________________________"
