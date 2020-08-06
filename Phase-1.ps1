@@ -3,7 +3,7 @@
 "             PowerShell Auditing Script  'aka Phase-1'             "
 "-------------------------------------------------------------------"
  SYNOPSIS: this script will document your PC's current profile and take a few unproblematic steps to harden its configuration
- DESCRIPTION: the most successful enterprises maintain proper documentation of their systems/infastructure and is crucial in the event of an incident.
+ DESCRIPTION: The most successful enterprises maintain proper documentation of their systems/infastructure and is crucial in the event of an incident.
  Unfortunately, garnering this documentation has proven itself to be particularly time consuming and is prone to human error.
  This script intends to ease the burden of auditing through automation.
 
