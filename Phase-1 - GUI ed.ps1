@@ -9,7 +9,6 @@
 
  **FIXME FIX OTHER DEPENDENCIES W/O ADDING BAD RULES (ie SQl SRV)
  **TODO LIST POTENTIAL BEACONS
- **TODO summary list needs to go in a scrollable textbox on Panel2
  **FIXME admin rights dont work with this gui apparently
  ~~FIXME audit output can honestly just go and writhe in shrewd darkness over in the transcript file~~
 
@@ -21,15 +20,15 @@
   Addressing Script Prerequisites:
 ---------------------------------#>
 #Elevates permissions in new window, if needed
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+<#if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
   Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit
-}
+}#>
 
 function p1GUI {
   <#---------------------
     Main Script Function Definitions:
   ----------------------#>
-   $summaryStr=""
+   $summaryStr="Summary of Actions Taken:`r`n"
    #Deals with the space math for the header function
    function space{
      Param([int]$len,[String]$str)
@@ -271,16 +270,6 @@ function p1GUI {
     Get-ChildItem "HKCU:\Software\Microsoft\Windows\CurrentVersion\RunServices" -ErrorAction SilentlyContinue
    }
 
-  #SUMMARY------------------------------------------------------------------
-  function summary{ #FIXME
-    Write-Host (header "Summary of Actions Taken")
-    Write-Host $summaryStr
-    Write-Host "Audit Complete >> REMEMBER TO CHANGE YOUR PASSWORD!"
-    Write-Host
-    Write-Host "**DISCLAIMER: this is not comprehensive, so you will have to secure your individual services, this is only a general system audit**"
-  }
-
-
   <#---------------------
         START GUI:
   ----------------------#>
@@ -296,11 +285,22 @@ function p1GUI {
 	$labelAudit = New-Object 'System.Windows.Forms.Label'
 	$checkedlistbox2 = New-Object 'System.Windows.Forms.CheckedListBox'
 	$checkedlistbox1 = New-Object 'System.Windows.Forms.CheckedListBox'
+  $textbox1 = New-Object 'System.Windows.Forms.TextBox'
 	$splitcontainer1 = New-Object 'System.Windows.Forms.SplitContainer'
 	$buttonSubmit = New-Object 'System.Windows.Forms.Button'
 	$labelConfigureOutput = New-Object 'System.Windows.Forms.Label'
 	$InitialFormWindowState = New-Object 'System.Windows.Forms.FormWindowState'
 	$outputStr = "Phase-1 Windows Audit Script >>`r`n"
+
+  #SUMMARY------------------------------------------------------------------
+  function summary{
+    $textbox1.Text = $summaryStr
+    Write-Host (header "Summary of Actions Taken")
+    Write-Host $summaryStr
+    Write-Host "Audit Complete >> REMEMBER TO CHANGE YOUR PASSWORD!"
+    Write-Host
+    Write-Host "**DISCLAIMER: this is not comprehensive, so you will have to secure your individual services, this is only a general system audit**"
+  }
 
   function Update-ListBox {
 		  param(
@@ -365,22 +365,18 @@ function p1GUI {
     if($checkedlistbox1.GetItemCheckState(5) -eq 'Checked'){network}
     if($checkedlistbox1.GetItemCheckState(6) -eq 'Checked'){reg}
     if($checkedlistbox1.GetItemCheckState(7) -eq 'Checked'){misc}
-    <#--------------------------------------------------------
+    #--------------------------------------------------------
     if($checkedlistbox2.GetItemCheckState(1) -eq 'Checked'){fwset}
     if($checkedlistbox2.GetItemCheckState(2) -eq 'Checked'){smb_rdp}
     if($checkedlistbox2.GetItemCheckState(3) -eq 'Checked'){useradd}
     if($checkedlistbox2.GetItemCheckState(4) -eq 'Checked'){schtasks}
     if($checkedlistbox2.GetItemCheckState(5) -eq 'Checked'){accessibility}
     if($checkedlistbox2.GetItemCheckState(6) -eq 'Checked'){prefetch}
-    if($checkedlistbox2.GetItemCheckState(7) -eq 'Checked'){miscedit} #>
+    if($checkedlistbox2.GetItemCheckState(7) -eq 'Checked'){miscedit}
     summary
     Stop-Transcript
     $buttonSubmit.Visible=$False
   }
-	$Panel2_Paint=[System.Windows.Forms.PaintEventHandler]{
-	 #Event Argument: $_ = [System.Windows.Forms.PaintEventArgs]
-		#TODO: IDK DO SOMETHING W OUTPUT MAYBE
-	 }
 
   $Form_StateCorrection_Load={
 		 #Correct the initial state of the form to prevent the .Net maximized form issue
@@ -422,7 +418,7 @@ function p1GUI {
 	#OBJ labelHarden >>
 	$Harden.AutoSize = $True
 	$Harden.BackColor = [System.Drawing.SystemColors]::ControlLightLight
-	$Harden.Location = New-Object System.Drawing.Point(31, 205)
+	$Harden.Location = New-Object System.Drawing.Point(29, 202)
 	$Harden.Name = 'Harden'
 	$Harden.Size = New-Object System.Drawing.Size(42, 13)
 	$Harden.TabIndex = 6
@@ -431,7 +427,7 @@ function p1GUI {
 	# OBJ labelAudit >>
 	$labelAudit.AutoSize = $True
 	$labelAudit.BackColor = [System.Drawing.SystemColors]::ControlLightLight
-	$labelAudit.Location = New-Object System.Drawing.Point(31, 46)
+	$labelAudit.Location = New-Object System.Drawing.Point(29, 46)
 	$labelAudit.Name = 'labelAudit'
 	$labelAudit.Size = New-Object System.Drawing.Size(31, 13)
 	$labelAudit.TabIndex = 5
@@ -447,9 +443,9 @@ function p1GUI {
   [void]$checkedlistbox2.Items.Add('Accessibility Features')
 	[void]$checkedlistbox2.Items.Add('Prefetch')
 	[void]$checkedlistbox2.Items.Add('Misc Items')
-	$checkedlistbox2.Location = New-Object System.Drawing.Point(29, 223)
+	$checkedlistbox2.Location = New-Object System.Drawing.Point(25, 220)
 	$checkedlistbox2.Name = 'checkedlistbox2'
-	$checkedlistbox2.Size = New-Object System.Drawing.Size(137, 109)
+	$checkedlistbox2.Size = New-Object System.Drawing.Size(140, 125)
 	$checkedlistbox2.TabIndex = 4
 	$checkedlistbox2.add_SelectedIndexChanged($checkedlistbox2_SelectedIndexChanged)
 
@@ -463,20 +459,28 @@ function p1GUI {
 	[void]$checkedlistbox1.Items.Add('Network Connections')
 	[void]$checkedlistbox1.Items.Add('Registry Values')
 	[void]$checkedlistbox1.Items.Add('Misc Items')
-	$checkedlistbox1.Location = New-Object System.Drawing.Point(29, 64)
+	$checkedlistbox1.Location = New-Object System.Drawing.Point(25, 65)
 	$checkedlistbox1.Name = 'checkedlistbox1'
-	$checkedlistbox1.Size = New-Object System.Drawing.Size(137, 124)
+	$checkedlistbox1.Size = New-Object System.Drawing.Size(140, 125)
 	$checkedlistbox1.TabIndex = 2
 	$checkedlistbox1.add_SelectedIndexChanged($checkedlistbox1_SelectedIndexChanged)
+
+  #OBJ SCROLLY BAR >>
+  $textbox1.Location = New-Object System.Drawing.Point(30, 25)
+  $textbox1.Multiline = $True
+  $textbox1.Name = 'textbox1'
+  $textbox1.ScrollBars = 'Vertical'
+  $textbox1.Size = New-Object System.Drawing.Size(186, 350)
+  $textbox1.TabIndex = 2
 
 	#OBJ splitcontainer1 >>
 	$splitcontainer1.Location = New-Object System.Drawing.Point(8, 12)
 	$splitcontainer1.Name = 'splitcontainer1'
 	$splitcontainer1.Panel1.BackColor = [System.Drawing.SystemColors]::ControlLightLight
 	[void]$splitcontainer1.Panel1.Controls.Add($labelConfigureOutput)
-	[void]$splitcontainer1.Panel1.Controls.Add($checkbox1)
 	[void]$splitcontainer1.Panel1.Controls.Add($buttonSubmit)
 	$splitcontainer1.Panel2.BackColor = [System.Drawing.SystemColors]::ControlLightLight
+  [void]$splitcontainer1.Panel2.Controls.Add($textbox1)
 	$splitcontainer1.Size = New-Object System.Drawing.Size(404, 407)
 	$splitcontainer1.SplitterDistance = 163
 	$splitcontainer1.TabIndex = 9
@@ -515,3 +519,14 @@ function p1GUI {
 }
 
 p1GUI | Out-Null
+
+
+
+
+
+
+
+
+
+
+	#endregion Generated Form Code
