@@ -248,8 +248,8 @@ Set-ExecutionPolicy Unrestricted -force
   #DELETE UNNECCESSARY SCHEDULED TASKS >>
   schtasks /delete /TN * /F
 
-  #RM ACCESSIBILITY FEATURES
-    #NOTE: This is not advisable for enviornments that need to accomodate individuals with disibility
+  #REMOVE ACCESSIBILITY FEATURES
+    #NOTE: This is not advisable in general, but is particularly useful in competitive cyber security enviornments
   $pathlist= "C:\Windows\System32\osk.exe", "C:\Windows\System32\Magnify.exe", "C:\Windows\System32\Narrator.exe", "C:\Windows\System32\DisplaySwitch.exe", "C:\Windows\System32\AtBroker.exe", "C:\windows\system32\sethc.exe"
   foreach ($path in $pathlist){
     takeown /F $path /A
