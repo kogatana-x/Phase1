@@ -270,7 +270,7 @@ Set-ExecutionPolicy Unrestricted -force
 
   Write-Host (header "Summary of Actions Taken")
   Write-Host "1.) Active user's password has been changed"
-  Write-Host "2.) Temporary backdoor, poop, successfully created"
+  Write-Host "2.) Temporary backdoor, backup, successfully created"
   Write-Host "3.) Guest Account has been sucessfully disabled"
   Write-Host "4.) SMB & RDP have been successfully hardened"
   Write-Host "5.) Firewall has been properly configured; logs are located in: C:\Apps\app_log.txt"
