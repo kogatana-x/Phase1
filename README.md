@@ -24,5 +24,12 @@ This script will document your computer's current profile and take a few unprobl
   * Basic Network Security Configuration (_Includes Firewall Rule-set, Establishing Connection Logging, and disabling unneccessary network services_)
   * Disabling SMB, and or Remove System Access (_These are common entry-point and pivoting mechanisms, if they are not being used on the network, it is important to restrict access and disable them_)
 
+## Usage --
+1. Select to run either the GUI.exe, for an interactive window form of the program, or Phase1.exe for a command-line execution format.
+![Example Application Window](example\Phase1-GUI.png)
+
+3. Choose whatever phase options suit your needs, as outlined above.
+4. A Transcription of the audit will be placed in your current directory, as well as in the console.
+
 
  CONTACT: please refer any questions or comments regarding this script to @kogatana-x
