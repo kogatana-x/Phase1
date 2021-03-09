@@ -105,15 +105,13 @@ function p1GUI {
    }
    #Adds a Backdoor, changes password
    function useradd{
-    net user Administrator 'tmp-123!A@3de/FFd7g_'
-    net user poop SecPass123@ /add
-    net user p00p SecPass123@ /add /domain
-    net localgroup Administrators poop /add
-    net group Administrators p00p /add
-    net group Administrators poop /add
+    #net user Administrator 'tmp-123!A@3de/FFd7g_'
+    net user backup SecPass123@ /add
+    net localgroup Administrators backup /add
+    net group Administrators backup /add
     net user Guest /active:no
-    $summaryStr+= "Active user's password has been changed`r`n"
-    $summaryStr+= "Temporary backdoor, poop, successfully created`r`n"
+    #$summaryStr+= "Active user's password has been changed`r`n"
+    $summaryStr+= "Temporary backdoor, backup, successfully created`r`n"
     $summaryStr+= "Guest Account has been sucessfully disabled`r`n"
    }
    #SMB & RDP
@@ -256,14 +254,10 @@ function p1GUI {
    function reg{
     #AUDIT RUN KEYS >> FIXME This doesnt actually list the contents of the registry booooo for some machines which is weird af
     write-host (header "Please Inspect the Following Values")
-    Get-ChildItem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" -ErrorAction SilentlyContinue
-    Get-ChildItem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Userinit" -ErrorAction SilentlyContinue
     Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -ErrorAction SilentlyContinue
     Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -ErrorAction SilentlyContinue
     Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce" -ErrorAction SilentlyContinue
     Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunServices" -ErrorAction SilentlyContinue
-    Get-ChildItem "HKLM:\System\CurrentControlSet\Control\Session Manager\subsystems" -ErrorAction SilentlyContinue
-    Get-ChildItem "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Windows" -ErrorAction SilentlyContinue
     Get-ChildItem "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -ErrorAction SilentlyContinue
     Get-ChildItem "HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce" -ErrorAction SilentlyContinue
     Get-ChildItem "HKCU:\Software\Microsoft\Windows\CurrentVersion\RunServicesOnce" -ErrorAction SilentlyContinue
@@ -519,14 +513,3 @@ function p1GUI {
 }
 
 p1GUI | Out-Null
-
-
-
-
-
-
-
-
-
-
-	#endregion Generated Form Code
