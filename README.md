@@ -27,7 +27,7 @@ This script will document your computer's current profile and take a few unprobl
 ## Usage --
 1. Select to run either the GUI.exe, for an interactive window form of the program, or Phase1.exe for a command-line execution format.
 #### The Application Window:
- ![Example Application Window](example\Phase1-GUI.png)
+ ![Example Application Window](example/Phase1-GUI.png)
 
 3. Choose whatever phase options suit your needs, as outlined above.
 4. A Transcription of the audit will be placed in your current directory, as well as in the console.
